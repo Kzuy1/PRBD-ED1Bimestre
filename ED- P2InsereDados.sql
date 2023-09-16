@@ -658,19 +658,11 @@ END
 GO
 
 GO
-CREATE PROCEDURE CriaCarteira(@ClienteCodigo INT)
+CREATE PROCEDURE CriaCarteira (@CodigoCorretora INT, @CodigoCliente INT)
 AS
 BEGIN
-	DECLARE @Boleam INT;
-	SET @Boleam = CAST((RAND() * 10) + 1 AS INT);
-	
-	IF @Boleam < 8 
-	BEGIN
-		DECLARE @Corretora INT;
-		SET @Corretora = CAST((RAND() * 4) + 1 AS INT);
-		
-		DECLARE @Existe INT;
-		SELECT @Existe = COUNT(*)FROM Carteira WHERE CodigoCliente = @ClienteCodigo AND CodigoCorretora = @Corretora;
+	DECLARE @Existe INT;
+		SELECT @Existe = COUNT(*)FROM Carteira WHERE CodigoCliente = @CodigoCliente AND CodigoCorretora = @CodigoCorretora;
 		
 		IF @Existe = 0
 		BEGIN
@@ -685,14 +677,42 @@ BEGIN
 			END;
 			
 			INSERT INTO Carteira (Endereco, CodigoCorretora, CodigoCliente) VALUES
-				(@Endereco, @Corretora, @ClienteCodigo)
+				(@Endereco, @CodigoCorretora, @CodigoCliente)
 			EXEC AdicionaItensCarteira @Endereco = @Endereco;
 		END
-		ELSE
-		BEGIN
-			EXEC CriaCarteira @ClienteCodigo = @ClienteCodigo;
-		END
-	END;
+END
+GO
+
+GO
+CREATE PROCEDURE CriaConta(@ClienteCodigo INT)
+AS
+BEGIN
+	DECLARE @Boleam INT;
+	SET @Boleam = CAST((RAND() * 3) + 1 AS INT);
+
+	IF @Boleam = 1
+	BEGIN
+		EXEC CriaCarteira @CodigoCorretora = 1, @CodigoCliente = @ClienteCodigo;
+	END
+
+	SET @Boleam = CAST((RAND() * 3) + 1 AS INT);
+	IF @Boleam = 1
+	BEGIN
+		EXEC CriaCarteira @CodigoCorretora = 2, @CodigoCliente = @ClienteCodigo;
+	END
+
+	SET @Boleam = CAST((RAND() * 3) + 1 AS INT);
+	IF @Boleam = 1
+	BEGIN
+		EXEC CriaCarteira @CodigoCorretora = 3, @CodigoCliente = @ClienteCodigo;
+	END
+	
+	SET @Boleam = CAST((RAND() * 3) + 1 AS INT);
+	IF @Boleam = 1
+	BEGIN
+		EXEC CriaCarteira @CodigoCorretora = 4, @CodigoCliente = @ClienteCodigo;
+	END
+
 END;
 GO
 
@@ -704,7 +724,7 @@ SELECT @MaxValue = COUNT(*) FROM Cliente;
 
 WHILE @Counter <= @MaxValue
 BEGIN
-	EXEC CriaCarteira @ClienteCodigo = @Counter;
+	EXEC CriaConta @ClienteCodigo = @Counter;
 	
     SET @Counter = @Counter + 1;
 END;

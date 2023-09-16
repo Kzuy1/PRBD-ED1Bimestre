@@ -1,0 +1,20 @@
+ALTER TABLE ItemCarteira DROP CONSTRAINT fk_CodigoMoeda;
+ALTER TABLE ItemCarteira DROP CONSTRAINT fk_Endereco;
+ALTER TABLE ParesMoeda DROP CONSTRAINT fk_CodigoMoedaCotacao;
+ALTER TABLE ParesMoeda DROP CONSTRAINT fk_CodigoMoedaBase;
+ALTER TABLE Carteira DROP CONSTRAINT fk_CodigoCliente;
+ALTER TABLE Carteira DROP CONSTRAINT fk_CodigoCorretora;
+ALTER TABLE Cliente DROP CONSTRAINT fk_MoedaPrincipal;
+
+-- Remove as tabelas
+DROP TABLE ItemCarteira;
+DROP TABLE ParesMoeda;
+DROP TABLE Carteira;
+DROP TABLE Cliente;
+DROP TABLE Corretora;
+DROP TABLE Moeda;
+
+-- Remove o banco de dados
+USE master;
+ALTER DATABASE LEONARDO_CZUY_ED1 SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+DROP DATABASE LEONARDO_CZUY_ED1;
